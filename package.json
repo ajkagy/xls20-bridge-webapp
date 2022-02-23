@@ -1,0 +1,53 @@
+{
+  "name": "xls-20-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@chakra-ui/icons": "^1.1.1",
+    "@chakra-ui/react": "^1.8.1",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@metamask/jazzicon": "^2.0.0",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@usedapp/core": "^0.10.1",
+    "dotenv": "^16.0.0",
+    "env-cmd": "^10.1.0",
+    "framer-motion": "4.1.17",
+    "moralis": "^1.2.4",
+    "react": "^17.0.2",
+    "react-device-detect": "^2.1.2",
+    "react-dom": "^17.0.2",
+    "react-moralis": "^1.2.1",
+    "react-scripts": "4.0.3",
+    "simple-react-image-picker": "^1.1.7",
+    "web-vitals": "^2.1.4",
+    "web3-eth-contract": "^1.7.0",
+    "xrpl": "^2.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

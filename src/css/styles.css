@@ -1,0 +1,29 @@
+div.ext-box { display: table; width:100%; height:100%; align-items:center; align-content:center; }
+div.int-box { font-family:'Arial';display: table-cell; vertical-align: middle; align-items:center; align-content:center; text-align:center; }
+div.int-box2 {  font-family:'Arial';display: table-cell; vertical-align: middle; align-items:center; align-content:center; text-align:left; }
+
+.imgPicker {
+    border: 3px dotted #000;
+    border-radius: 5px;
+    margin: 5px;
+    height: 200px;
+    width: 200px;
+    transition: transform .2s;
+}
+.imgPicker:hover {
+    transform: scale(1.1);
+}
+.selected {
+  border: 3px dotted #4caf50;
+    border-radius: 5px;
+    margin: 5px;
+    height: 200px;
+    width: 200px;
+    opacity: .5
+ }
+
+ .container {
+    position: relative;
+    width: 100%;
+    display: contents;
+ }
