@@ -1,10 +1,12 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { isMobile, isDesktop } from "react-device-detect";
+import { Route, Switch, Redirect, NavLink } from "react-router-dom";
 import AccountSubComp from "./components/AccountSubComp";
 import Bridge from "./Bridge";
 import "./css/styles.css";
 import { MoralisProvider } from "react-moralis";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -26,10 +28,35 @@ import {
   ChakraProvider,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import 'status-indicator/styles.css'
 require("dotenv").config();
 
 export default function App() {
+  const [bridgeOnlineStatus, setBridgeOnlineStatus] = React.useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(async () => {
+    await getBridgeStatus();
+  }, []);
+
+  async function getBridgeStatus() {
+    try {
+      let response = await fetch(
+        process.env.REACT_APP_PROXY_ENDPOINT +
+          "/api/xls20bridge/bridgeStatus",
+        {
+          method: "GET",
+        }
+      );
+      let json = await response.json();
+      console.log(json);
+      setBridgeOnlineStatus(json.status);
+    } catch (error) {
+      console.log('error');
+      setBridgeOnlineStatus("Offline");
+    }
+  }
+
   return (
     <ChakraProvider>
       <MoralisProvider
@@ -74,6 +101,17 @@ export default function App() {
             ></HStack>
             <Flex alignItems={"center"} fontFamily="Hind" fontSize="x-small">
               <Menu>
+                {isDesktop ? <>
+                {bridgeOnlineStatus == "Online" ? <><status-indicator style={{marginRight:'15px',marginLeft:'30px'}} positive pulse></status-indicator> <Text style={{marginRight:"30px", fontSize:'15px', fontWeight:'800', fontFamily:'Arial'}}>Bridge Status: {bridgeOnlineStatus}</Text></> : <></>}
+                {bridgeOnlineStatus == "Validation Offline" ? <><status-indicator style={{marginRight:'15px',marginLeft:'30px'}} intermediary pulse></status-indicator> <Text style={{marginRight:"30px", fontSize:'15px', fontWeight:'800', fontFamily:'Arial'}}>Bridge Status: {bridgeOnlineStatus}</Text></> : <></>}
+                {bridgeOnlineStatus == "Offline" ? <><status-indicator style={{marginRight:'15px',marginLeft:'30px'}} negative pulse></status-indicator> <Text style={{marginRight:"30px", fontSize:'15px', fontWeight:'800', fontFamily:'Arial'}}>Bridge Status: {bridgeOnlineStatus}</Text></> : <></>}
+                </>
+                :<>
+                {bridgeOnlineStatus == "Online" ? <><status-indicator style={{marginRight:'15px',marginLeft:'10px'}} positive pulse></status-indicator> <Text style={{marginRight:"30px", fontSize:'12px', fontWeight:'800', fontFamily:'Arial'}}>Bridge Status: {bridgeOnlineStatus}</Text></> : <></>}
+                {bridgeOnlineStatus == "Validation Offline" ? <><status-indicator style={{marginRight:'15px',marginLeft:'10px'}} intermediary pulse></status-indicator> <Text style={{marginRight:"30px", fontSize:'12px', fontWeight:'800', fontFamily:'Arial'}}>Bridge Status: {bridgeOnlineStatus}</Text></> : <></>}
+                {bridgeOnlineStatus == "Offline" ? <><status-indicator style={{marginRight:'15px',marginLeft:'10px'}} negative pulse></status-indicator> <Text style={{marginRight:"30px", fontSize:'12px', fontWeight:'800', fontFamily:'Arial'}}>Bridge Status: {bridgeOnlineStatus}</Text></> : <></>}
+                
+                </> }
                 <AccountSubComp />
               </Menu>
             </Flex>
@@ -85,7 +123,7 @@ export default function App() {
           ) : null}
         </Box>
         <Box p={4} minH={"100%"} backgroundSize={"cover"} width={"100%"}>
-          <Bridge/>
+          <Bridge BridgeOnlineStatus={bridgeOnlineStatus} />
         </Box>
       </MoralisProvider>
     </ChakraProvider>

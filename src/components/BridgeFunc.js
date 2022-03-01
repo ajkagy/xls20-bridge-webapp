@@ -53,7 +53,7 @@ import { TrustSetFlags } from "xrpl";
 const xrpl = require("xrpl");
 
 const BridgeFunc = (props) => {
-  const { SelectedNFT, tryBridgeConfirmation } = props;
+  const { SelectedNFT, tryBridgeConfirmation, BridgeOnlineStatus } = props;
   const { account, deactivate, chainId } = useEthers();
   const { state: bridgeState, send: bridge } =
     useContractMethodBridge("BridgeETHToXRPL");
@@ -69,6 +69,11 @@ const BridgeFunc = (props) => {
   }
 
   useEffect(() => {
+    if(BridgeOnlineStatus != "Online")
+    {
+      setBridgeButtonDisabled(true);
+    }
+    console.log(bridgeState)
     if (bridgeState.receipt != undefined) {
       if (
         bridgeState.receipt.from == account &&
@@ -83,12 +88,13 @@ const BridgeFunc = (props) => {
           tryBridgeConfirmation(xrpAddress);
         }
       }
-      if (
-        bridgeState.status == "Exception" &&
-        bridgeState.errorMessage != errorMsg
-      ) {
-        setErrorMsg(bridgeState.errorMessage ? bridgeState.errorMessage : "");
-      }
+    }
+    if (
+      bridgeState.status == "Exception" &&
+      bridgeState.errorMessage != errorMsg
+    ) {
+      console.log('set error message')
+      setErrorMsg(bridgeState.errorMessage ? bridgeState.errorMessage : "");
     }
   }, [bridgeState]);
 

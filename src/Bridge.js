@@ -55,7 +55,8 @@ import ClaimNFT from "./components/ClaimNFT";
 import { useContractMethodBridge } from "./hooks/index";
 require("dotenv").config();
 
-export default function Bridge() {
+export default function Bridge(props) {
+  const { BridgeOnlineStatus } = props;
   const { account, deactivate, chainId } = useEthers();
   const [accountNFTs, setAccountNFTs] = useState([]);
   const [step, setStep] = useState([]);
@@ -68,28 +69,8 @@ export default function Bridge() {
   const [bridgeIsProcessing, setBridgeIsProcessing] = React.useState(false);
   const [bridgeStatus, setBridgeStatus] = React.useState("");
   const [xrplTokenUrl, setXrplTokenUri] = React.useState("");
-  const Contract = require("web3-eth-contract");
 
   var intervalId;
-
-  async function IsApprovedForAll(
-    contractAddress,
-    ownerAddress,
-    operatorAddress
-  ) {
-    const provider = ethers.getDefaultProvider(chain, {
-      infura: {
-        projectId: process.env.REACT_APP_INFURA_PROJECTID,
-        projectSecret: process.env.REACT_APP_INFURA_SECRET,
-      },
-    });
-    let contract = new ethers.Contract(contractAddress, erc721abi, provider);
-    let isApproved = await contract.isApprovedForAll(
-      ownerAddress,
-      operatorAddress
-    );
-    return isApproved;
-  }
 
   async function fetchBridgeStatus(tokenId, tokenAddress, xrpAddress) {
     try {
@@ -118,20 +99,57 @@ export default function Bridge() {
     }
   }
 
+  async function fetchTokenUri(contractAddress,tokenId) {
+    try {
+      const payLoad = {
+        contractAddress: contractAddress,
+        tokenId: tokenId
+      }
+      let response = await fetch(
+        process.env.REACT_APP_PROXY_ENDPOINT + '/eth/getTokenUri',
+        {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payLoad),
+        }
+      );
+      let json = await response.json();
+      return json.tokenuri;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function isApprovedForAll(contractAddress,ownerAddress,operatorAddress) {
+    try {
+      const payLoad = {
+        contractAddress: contractAddress,
+        ownerAddress: ownerAddress,
+        operatorAddress: operatorAddress
+      }
+      let response = await fetch(
+        process.env.REACT_APP_PROXY_ENDPOINT + '/eth/isApprovedForAll',
+        {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payLoad),
+        }
+      );
+      let json = await response.json();
+      return json.isApproved;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async function setTokenUriFromContract(contractAddress, tokenId) {
-    Contract.setProvider(process.env.REACT_APP_ETH_ENDPOINT);
-    var TokenContract = new Contract(erc721abi, contractAddress);
-    await TokenContract.methods
-      .tokenURI(tokenId)
-      .call()
-      .then(async function (result) {
-        setXrplTokenUri(result);
-      });
+    let tokenUri = await fetchTokenUri(contractAddress,tokenId);
+    setXrplTokenUri(tokenUri);
   }
 
   async function tryApprovalConfirmation() {
     setIsApprovedForTransfer(
-      await IsApprovedForAll(selectedNFT.token_address, account, bridgeContract)
+      await isApprovedForAll(selectedNFT.token_address, account, bridgeContract)
     );
   }
 
@@ -146,7 +164,7 @@ export default function Bridge() {
     setSelectedNFT(nft);
     setSelectedNFTImage(nftImage);
     setIsApprovedForTransfer(
-      await IsApprovedForAll(nft.token_address, account, bridgeContract)
+      await isApprovedForAll(nft.token_address, account, bridgeContract)
     );
   }
   function closeModalNoSelect() {
@@ -312,6 +330,7 @@ export default function Bridge() {
                 xrplTokenUrl != "" ? (
                   <Flex>
                     <BridgeFunc
+                      BridgeOnlineStatus={BridgeOnlineStatus}
                       tryBridgeConfirmation={tryBridgeConfirmation}
                       SelectedNFT={selectedNFT}
                     />
@@ -321,6 +340,7 @@ export default function Bridge() {
                     {" "}
                     {selectedNFT != null ? (
                       <SetApproval
+                        BridgeOnlineStatus={BridgeOnlineStatus}
                         tryApprovalConfirmation={tryApprovalConfirmation}
                         TokenContract={selectedNFT.token_address}
                       />

@@ -46,7 +46,7 @@ import { useContractMethod } from "../hooks/index";
 import PropTypes from "prop-types";
 
 const SetApproval = (props) => {
-  const { TokenContract, tryApprovalConfirmation } = props;
+  const { TokenContract, tryApprovalConfirmation, BridgeOnlineStatus } = props;
   const { account, deactivate, chainId } = useEthers();
   const { state: approveState, send: approveTransfer } = useContractMethod(
     "setApprovalForAll",
@@ -55,6 +55,7 @@ const SetApproval = (props) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [transHash, setTransHash] = useState("");
   const [confirm, setConfirm] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
   const [MintReceipt, setMintReceipt] = useState();
 
   function approveForTransfer() {
@@ -62,6 +63,11 @@ const SetApproval = (props) => {
   }
 
   useEffect(() => {
+    if(BridgeOnlineStatus != "Online")
+    {
+      setDisableButton(true);
+    }
+
     if (approveState != undefined) {
       if (
         approveState.status == "Exception" &&
@@ -91,7 +97,7 @@ const SetApproval = (props) => {
       direction={"column"}
       alignItems={"center"}
     >
-      <Button onClick={approveForTransfer}>Approve NFT for Transfer</Button>
+      <Button disabled={disableButton} onClick={approveForTransfer}>Approve NFT for Transfer</Button>
       {approveState.status == "Mining" ? (
         <>
           {" "}

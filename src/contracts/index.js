@@ -1,5 +1,5 @@
 
-export const bridgeContract = "0x9d26edd30bbcDc6EA8884f8c97620306e79D75Fd";
+export const bridgeContract = "0x9788a7bA4a1743D6D76474D3efA2De1B15465E4f";
 export const configChain = 4;
 export const chainText = "Rinkeby Test Net";
 export const chainTxHashLink = "https://rinkeby.etherscan.io/tx/";
