@@ -25,12 +25,13 @@ git clone https://github.com/ajkagy/xls20-bridge-webapp
         REACT_APP_MORALIS_APP_ID=
         REACT_APP_MORALIS_SERVER_URL=
 
-4. Add your API Key, App ID and Server URL into the Moralis variable keys.
-5. Add the Bridge Proxy URL into the REACT_APP_PROXY_ENDPOINT environment variable you setup when installing [The Bridge Proxy](https://github.com/ajkagy/xls20-bridge-proxy)
-6. Install
+4. Open `xls20-bridge-webapp/src/contracts/index.js` and add the bridge contract address that was deployed to Rinkeby in the `bridgeContract` variable
+5. Add your API Key, App ID and Server URL into the Moralis variable keys.
+6. Add the Bridge Proxy URL into the REACT_APP_PROXY_ENDPOINT environment variable you setup when installing [The Bridge Proxy](https://github.com/ajkagy/xls20-bridge-proxy)
+7. Install
 
         npm install
 
-3. Start the webserver
+8. Start the webserver
 
         npm run start
