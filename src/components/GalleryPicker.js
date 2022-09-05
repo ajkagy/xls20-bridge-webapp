@@ -14,9 +14,9 @@ const GalleryPicker = (props) => {
       let imgSrc =
         image.metadata != null
           ? JSON.parse(image.metadata).image
-          : "noimage.jpg";
+          : "images/noimage.png";
       if (imgSrc == undefined) {
-        imgSrc = "noImage.jpg";
+        imgSrc = "images/noImage.png";
       }
       return {
         src: imgSrc,
